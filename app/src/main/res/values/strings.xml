@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Learning Project TimeTable</string>
+    <string name="title_assignment">Assignment</string>
+    <string name="title_class">Class</string>
+    <string name="title_note">Note</string>
+</resources>
