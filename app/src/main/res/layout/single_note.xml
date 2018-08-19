@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:background="#e7e6d7"
             android:padding="10dp"
-            android:text="This is the body of the note. Here we will keep note about our daily need. This app will help us" />
+            android:text="This is the content of the note. Here we will keep note about our daily need. This app will help us" />
 
 
     </LinearLayout>
