@@ -30,12 +30,11 @@ public class NoteFragment extends Fragment {
     FloatingActionButton newNoteFab;
     List<Note> noteList = new ArrayList<>();
     NoteDatabase noteDatabase;
-    protected RecyclerView noteRecyclerView;
+    RecyclerView noteRecyclerView;
     NotesAdapter notesAdapter;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_note,container,false);
         noteRecyclerView = view.findViewById(R.id.recycler_view_notes);
         newNoteFab = view.findViewById(R.id.fab_in_note);
@@ -112,6 +111,12 @@ public class NoteFragment extends Fragment {
         if(data.equals("refresh_data")) {
             notesAdapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
     }
 }
 
