@@ -19,6 +19,9 @@ public class Note {
         this.content = content;
     }
 
+    public Note() {
+    }
+
     public long getNote_id() {
         return note_id;
     }

@@ -9,12 +9,17 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -25,21 +30,29 @@ public class NoteFragment extends Fragment {
     FloatingActionButton newNoteFab;
     List<Note> noteList = new ArrayList<>();
     NoteDatabase noteDatabase;
-    RecyclerView noteRecyclerView;
+    protected RecyclerView noteRecyclerView;
     NotesAdapter notesAdapter;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_note,container,false);
-
         noteRecyclerView = view.findViewById(R.id.recycler_view_notes);
+        newNoteFab = view.findViewById(R.id.fab_in_note);
+        return view;
+    }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (getActivity() != null) {
+            EventBus.getDefault().register(this);
+        }
         noteDatabase  = NoteDatabase.getInstance(getActivity());
         noteList = noteDatabase.getNoteDao().getNotes();
         notesAdapter = new NotesAdapter(noteList, getActivity());
 
-        newNoteFab = view.findViewById(R.id.fab_in_note);
 
         newNoteFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,9 +104,15 @@ public class NoteFragment extends Fragment {
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         noteRecyclerView.setLayoutManager(staggeredGridLayoutManager);
         noteRecyclerView.setAdapter(notesAdapter);
-        return view;
+
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(String data) {
+        if(data.equals("refresh_data")) {
+            notesAdapter.notifyDataSetChanged();
+        }
+    }
 }
 
 
