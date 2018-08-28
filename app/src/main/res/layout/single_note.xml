@@ -37,13 +37,7 @@
             android:background="#e7e6d7"
             android:padding="10dp"
             android:text="This is the content of the note. Here we will keep note about our daily need. This app will help us" />
-        <TextView
-            android:id="@+id/dateInNoteID"
-            android:text="January 12, 2018 have to update"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
 
     </LinearLayout>
-
 
 </android.support.v7.widget.CardView>
