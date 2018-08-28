@@ -16,6 +16,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,12 +38,20 @@ public class NoteFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_note,container,false);
 
         noteRecyclerView = view.findViewById(R.id.recycler_view_notes);
+        newNoteFab = view.findViewById(R.id.fab_in_note);
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        if (getActivity() != null) {
+            EventBus.getDefault().register(this);
+        }
 
         noteDatabase  = NoteDatabase.getInstance(getActivity());
         noteList = noteDatabase.getNoteDao().getNotes();
         notesAdapter = new NotesAdapter(noteList, getActivity());
-
-        newNoteFab = view.findViewById(R.id.fab_in_note);
 
         newNoteFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,9 +103,20 @@ public class NoteFragment extends Fragment {
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         noteRecyclerView.setLayoutManager(staggeredGridLayoutManager);
         noteRecyclerView.setAdapter(notesAdapter);
-        return view;
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(String data) {
+        if(data.equals("refresh_data")) {
+            notesAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
+    }
 }
 
 

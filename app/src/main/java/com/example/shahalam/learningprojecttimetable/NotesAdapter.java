@@ -13,6 +13,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
@@ -47,7 +49,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
     }
 
     public class NoteViewHolder extends RecyclerView.ViewHolder {
-        TextView noteTitle, noteBody;
+        TextView noteTitle, noteBody, date;
 
         Note note;
 
@@ -118,7 +120,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
                             titleValue.setText(note.getTitle());
                             bodyValue.setText(note.getContent());
 
-                            Log.d(TAG, "onClick: before save button pressed 119" + note.getTitle());
                             save.setOnClickListener(new View.OnClickListener() {
 
 
@@ -129,27 +130,18 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
                                     String body = bodyValue.getText().toString();
 
                                     if (!title.equals("") && !body.equals("")) {
-
-                                        Note EditedNote = new Note(title, body);
-
-
-                                        Log.d(TAG, "onClick: before database create 137 " + EditedNote.getTitle());
                                         noteDatabase = NoteDatabase.getInstance(context);
-                                        noteDatabase.getNoteDao().updateNote(EditedNote);
 
-                                        notesAdapter = new NotesAdapter(noteList, context);
-                                        Log.d(TAG, "onClick: after database create and updateDao 141 " + EditedNote.getTitle());
-
-
-                                        Log.d(TAG, "onClick: after notesAdapter initialize 144 " + EditedNote.getTitle());
-                                        notesAdapter.notifyDataSetChanged();
-                                        Log.d(TAG, "onClick:  after dataset change notifiy 146 " + EditedNote.getTitle());
+                                        Note editedNote = noteList.get(getAdapterPosition());
+                                        editedNote.setTitle(title);
+                                        editedNote.setContent(body);
+                                        noteDatabase.getNoteDao().updateNote(editedNote);
+                                        EventBus.getDefault().post("refresh_data");
 
                                     } else {
                                         Toast.makeText(context, "Note or Title is empty !!!", Toast.LENGTH_LONG).show();
                                     }
                                     NewNoteDialog.cancel();
-                                    Log.d(TAG, "onClick:  after dialog cancel 152" + noteList.get(getAdapterPosition()).getTitle());
                                 }
                             });
 
@@ -176,7 +168,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
                 @Override
                 public void onClick(View view) {
                     int p = getLayoutPosition();
-                    Toast.makeText(view.getContext(), "Press Long click to Delete or Edit", Toast.LENGTH_LONG).show();
+                    Toast.makeText(view.getContext(), "Clicked Item not"+p+"\nPress Long click for edit and delete", Toast.LENGTH_LONG).show();
                 }
             });
         }

@@ -1,5 +1,6 @@
 package com.example.shahalam.learningprojecttimetable;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +24,7 @@ public class SundayFragment extends Fragment {
     RecyclerView classRecyclerView;
     ClassRecyclerViewAdapter sundayRVAdapter;
     String teacherName, courseName, roomNo;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -30,21 +36,8 @@ public class SundayFragment extends Fragment {
         classRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         classRecyclerView.setAdapter(sundayRVAdapter);
 
-        // get Data from class fragment
-        if (getArguments() != null) {
-            teacherName = getArguments().getString("teacherName","Teacher Not found");
-            courseName = getArguments().getString("CourseName","Course Name not found");
-            roomNo = getArguments().getString("roomNo","room not found");
-            ClassLecture newLecture = new ClassLecture(teacherName,courseName,roomNo);
-            sundayClassLectureList.add(newLecture);
-            sundayRVAdapter.notifyDataSetChanged();
-        }
-
-        ClassLecture lecture = new ClassLecture("Ahosan Habib", "ML","WB-241");
-        sundayClassLectureList.add(lecture);
-        sundayRVAdapter.notifyDataSetChanged();
-
         return view;
     }
+
 
 }

@@ -14,9 +14,13 @@ public class Note {
     String content;
     Date date;
 
+
+
     public Note(String title, String content) {
         this.title = title;
         this.content = content;
+        this.date = new Date(System.currentTimeMillis());
+
     }
 
     public long getNote_id() {
@@ -41,6 +45,14 @@ public class Note {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
 }
