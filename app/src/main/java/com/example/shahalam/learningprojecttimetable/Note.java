@@ -23,6 +23,9 @@ public class Note {
 
     }
 
+    public Note() {
+    }
+
     public long getNote_id() {
         return note_id;
     }
