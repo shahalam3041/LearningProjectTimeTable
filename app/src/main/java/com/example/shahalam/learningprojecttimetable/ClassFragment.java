@@ -14,6 +14,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -23,6 +24,9 @@ import java.util.Objects;
 
 public class ClassFragment extends Fragment {
 
+    DayFragmentCommunicator fragmentCommunicator;
+    List<ClassLecture> sundayLectureList;
+    ClassRecyclerViewAdapter classRecyclerViewAdapter;
     RecyclerView classRecyclerView;
     TabLayout tabLayout;
     FloatingActionButton fab;
@@ -44,11 +48,23 @@ public class ClassFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /// code to insert new lecture to specific day
+                int fabPosition = viewPager.getCurrentItem();
+                switch (fabPosition) {
+                    case 0:{        // add new lecture to sunday fragment
+                        classRecyclerViewAdapter = new ClassRecyclerViewAdapter(sundayLectureList,getActivity());
+                        ClassLecture newLecture = new ClassLecture("Ahosan Habib","ML","WB-241");
+                        sundayLectureList.add(newLecture);
+                        fragmentCommunicator.sendDataToDayFragment(sundayLectureList);
+                    }
+                }
             }
         });
 
         return view;
+    }
+
+    public void passValue(DayFragmentCommunicator dayFragmentCommunicator) {
+        this.fragmentCommunicator = dayFragmentCommunicator;
     }
 }
 
